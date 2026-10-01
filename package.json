@@ -1,5 +1,5 @@
 {
-  "name": "image-compressor-wasm",
+  "name": "@wanghaoran5555/image-compressor-wasm",
   "version": "0.1.0",
   "description": "A pure front-end image compressor compiled from Rust to WebAssembly. Shrink images by tuning quality and output format (JPEG/PNG), entirely in the browser.",
   "repository": {
@@ -39,6 +39,9 @@
     "browser"
   ],
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "engines": {
     "node": ">=18"
   }

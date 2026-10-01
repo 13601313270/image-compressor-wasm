@@ -56,7 +56,7 @@ Performs the compression.
 
 ```ts
 // 1. Load on demand (keeps the wasm out of the main bundle)
-const { default: init, compress_image } = await import('image-compressor-wasm')
+const { default: init, compress_image } = await import('@wanghaoran5555/image-compressor-wasm')
 
 // 2. Initialize (once only; cache it in a window variable or a module singleton)
 await init()
