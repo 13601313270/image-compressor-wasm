@@ -11,6 +11,12 @@ A pure front-end image compression tool that reduces image file size by adjustin
 - Encoding (output) supports: **JPEG and PNG only**
 - Compression is synchronous CPU work and blocks the calling thread
 
+## Implementation Notes
+
+- **JPEG**: encoded with the `quality` parameter, always using 4:2:0 chroma subsampling plus optimized Huffman tables for a better compression ratio
+- **PNG**: when `quality < 100` the image is first palette-quantized with imagequant (lossy); `quality = 100` produces a lossless PNG
+- Decoding is handled by the [`image`](https://crates.io/crates/image) crate, so common input formats are read first and then re-encoded into the target format
+
 ## Files
 
 | File | Purpose |
@@ -109,3 +115,15 @@ All of the following are measured results. Production code should not rely on th
 3. **JPEG has no alpha channel**: converting a PNG with a transparent background to JPEG loses the transparency (the transparent area renders with the image's own RGB values, usually black/noise). Use PNG output when you need transparency.
 4. **Synchronous and blocking**: compressing large images may cause UI jank. For very large images, consider calling it inside a Web Worker.
 5. **Compression does not resize**: this tool only adjusts encoding quality; the output keeps the original width and height and is not scaled.
+
+## Building from Source
+
+The Rust source lives in [`rust-wasm/`](./rust-wasm).
+
+```bash
+cd rust-wasm
+cargo build   # compile
+cargo test    # run tests
+```
+
+WebAssembly artifacts are produced with wasm-pack into `rust-wasm/pkg/`. The three files required for publishing — `image_compressor.js`, `image_compressor_bg.wasm` and `image_compressor.d.ts` — must be copied from `pkg/` to the repository root. `pkg/` itself is neither tracked by git nor shipped in the npm package.
