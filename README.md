@@ -47,11 +47,9 @@ Performs the compression.
 
 ## Usage Example
 
-An existing usage example in the project: [the `zipImg` function in Img.vue](../../../components/tableEditItem/Img.vue#L382-L416).
-
 ```ts
 // 1. Load on demand (keeps the wasm out of the main bundle)
-const { default: init, compress_image } = await import('@/plugins/wasm/image_compressor.js')
+const { default: init, compress_image } = await import('image-compressor-wasm')
 
 // 2. Initialize (once only; cache it in a window variable or a module singleton)
 await init()

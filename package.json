@@ -1,0 +1,35 @@
+{
+  "name": "image-compressor-wasm",
+  "version": "0.1.0",
+  "description": "A pure front-end image compressor compiled from Rust to WebAssembly. Shrink images by tuning quality and output format (JPEG/PNG), entirely in the browser.",
+  "type": "module",
+  "main": "image_compressor.js",
+  "module": "image_compressor.js",
+  "exports": {
+    ".": "./image_compressor.js",
+    "./image_compressor.js": "./image_compressor.js",
+    "./image_compressor_bg.wasm": "./image_compressor_bg.wasm",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "image_compressor.js",
+    "image_compressor_bg.wasm"
+  ],
+  "keywords": [
+    "wasm",
+    "wasm-bindgen",
+    "webassembly",
+    "rust",
+    "image",
+    "compress",
+    "compression",
+    "image-compression",
+    "jpeg",
+    "png",
+    "browser"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  }
+}

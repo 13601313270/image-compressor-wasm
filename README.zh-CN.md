@@ -47,11 +47,9 @@
 
 ## 使用示例
 
-项目中已有使用范例：[Img.vue 的 zipImg 函数](../../../components/tableEditItem/Img.vue#L382-L416)。
-
 ```ts
 // 1. 动态加载（可按需加载，wasm 不打进主包）
-const { default: init, compress_image } = await import('@/plugins/wasm/image_compressor.js')
+const { default: init, compress_image } = await import('image-compressor-wasm')
 
 // 2. 初始化（只需一次，可用 window 变量或模块单例缓存）
 await init()
