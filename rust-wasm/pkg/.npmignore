@@ -1,0 +1,2 @@
+# Overrides the sibling .gitignore (`*`) so npm can read the build artifacts.
+# The root package.json `files` whitelist still decides what actually ships.

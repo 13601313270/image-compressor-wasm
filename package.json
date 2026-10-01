@@ -8,20 +8,23 @@
   },
   "author": "13601313270 <309568486@qq.com>",
   "type": "module",
-  "main": "image_compressor.js",
-  "module": "image_compressor.js",
-  "types": "image_compressor.d.ts",
+  "main": "rust-wasm/pkg/image_compressor.js",
+  "module": "rust-wasm/pkg/image_compressor.js",
+  "types": "rust-wasm/pkg/image_compressor.d.ts",
   "exports": {
-    ".": "./image_compressor.js",
-    "./image_compressor.js": "./image_compressor.js",
-    "./image_compressor_bg.wasm": "./image_compressor_bg.wasm",
+    ".": "./rust-wasm/pkg/image_compressor.js",
+    "./image_compressor_bg.wasm": "./rust-wasm/pkg/image_compressor_bg.wasm",
     "./package.json": "./package.json"
   },
   "files": [
-    "image_compressor.js",
-    "image_compressor_bg.wasm",
-    "image_compressor.d.ts"
+    "rust-wasm/pkg/image_compressor.js",
+    "rust-wasm/pkg/image_compressor_bg.wasm",
+    "rust-wasm/pkg/image_compressor.d.ts"
   ],
+  "scripts": {
+    "build": "wasm-pack build rust-wasm --target web",
+    "prepublishOnly": "npm run build"
+  },
   "keywords": [
     "wasm",
     "wasm-bindgen",
