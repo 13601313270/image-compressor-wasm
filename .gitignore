@@ -1,0 +1,5 @@
+# macOS
+.DS_Store
+
+# Rust 构建产物（rust-wasm/.gitignore 已忽略 /target，这里再兜一层，防止误提交上 GB 的目录）
+/rust-wasm/target/

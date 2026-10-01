@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Compressor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            padding: 16px;
+            background-color: white;
+            text-align: center;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        input[type="file"] {
+            margin: 1rem 0;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin: 0.5rem;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        select {
+            padding: 0.5rem;
+            font-size: 1rem;
+            margin: 0.5rem;
+        }
+
+        #info {
+            margin-top: 1rem;
+            font-size: 1rem;
+            color: #333;
+        }
+
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+
+        .drop-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            height: 200px;
+            transition: all 0.3s ease;
+            margin-bottom: 16px;
+        }
+
+        .drop-area .icon {
+            font-size: 4rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .drop-area:hover {
+            border-color: #4CAF50;
+            background-color: #f9f9f9;
+        }
+
+        .drop-area.dragover {
+            border-color: #4CAF50;
+            background-color: #e8f5e9;
+        }
+
+        #fileInfo {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .tools {
+            position: relative;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            padding: 15px;
+        }
+
+        .tools .quality-control {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin: 0.5rem 0;
+        }
+
+        .tools input[type="range"] {
+            width: 200px;
+            height: 8px;
+            border-radius: 5px;
+            background: #ddd;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .tools input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #4CAF50;
+            cursor: pointer;
+        }
+
+        .tools #qualityValue {
+            font-weight: bold;
+            color: #4CAF50;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .tools #format {
+            margin: 0;
+        }
+
+        .tools #compressButton {
+            margin: 0;
+        }
+
+        .tools .helpDesc {
+            position: absolute;
+            background: white;
+            right: 20px;
+            bottom: -60px;
+            box-sizing: border-box;
+            border: solid 1px #4bae51;
+            border-radius: 8px;
+            padding: 18px;
+            box-shadow: 0 0 20px -10px #4bae51;
+            font-size: 24px;
+            color: rgb(75 174 81);
+        }
+
+        .tools .helpDesc::before {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            right: 20%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 10px solid #4bae51;
+        }
+
+        .tools .helpDesc::after {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            right: 21.4%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 8px solid white;
+        }
+
+        .result-container {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            margin: 10px 0;
+            text-align: left;
+            background-color: #f9f9f9;
+        }
+
+        .result-container img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 10px;
+            border: 1px solid #eee;
+        }
+
+        .download-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin: 0;
+        }
+
+        .download-btn:hover {
+            background-color: #45a049;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #d3dae5;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .stats .value {
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .result-diff {
+            display: flex;
+            overflow: hidden;
+            flex-grow: 1;
+            align-items: start;
+        }
+
+        .result-diff-split {
+            width: 1px;
+            margin: 0 12px;
+            height: 100%;
+            background-color: #ddd;
+        }
+
+        #originalImageContainer {
+            width: 50%;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            margin: 10px 0;
+            text-align: left;
+            background-color: #f9f9f9;
+        }
+
+        #output {
+            width: 50%;
+            height: 100%;
+            overflow: auto;
+        }
+
+        #originalImageInfo {}
+
+        #originalImageInfo .title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        #originalImageInfo .title .close {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+        }
+
+        #originalImageInfo .title .close>img {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="tools">
+            <label for="quality">Quality:</label>
+            <div class="quality-control">
+                <input type="range" id="quality" min="0" max="100" value="80">
+                <span id="qualityValue">80</span>
+            </div>
+            <label for="format">Output Format:</label>
+            <select id="format">
+                <option value="jpeg">JPEG</option>
+                <option value="png">PNG</option>
+            </select>
+            <div style="flex-grow: 1;"></div>
+            <button id="compressButton">Compress Image</button>
+            <div id="helpDesc" class="helpDesc" style="display: none;">
+                <div>click to compress image</div>
+            </div>
+        </div>
+        <div class="result-diff">
+            <div id="originalImageContainer">
+                <div id="dropArea" class="drop-area">
+                    <div class="icon">📁</div>
+                    <div>Drag & drop an image here or click to select</div>
+                    <input type="file" id="imageInput" accept="image/*" style="display: none;">
+                </div>
+                <div id="originalImageInfo" style="display: none;">
+                    <div class="title">
+                        <div>Original Image:</div>
+                        <div id="fileInfo"></div>
+                        <div style="flex-grow: 1;"></div>
+                        <div id="clearState" class="close">
+                            <img src="./close.svg" alt="close" />
+                        </div>
+                    </div>
+                    <img id="originalImage" src="" alt="Original Image"
+                        style="max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+            </div>
+            <div class="result-diff-split">
+            </div>
+            <div id="output">
+
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import init, { compress_image } from './image_compressor.js';
+
+        let compressedBlob = null;
+
+        let selectedFile = null;
+
+        // 存储压缩图片数据的数组
+        let compressedImages = [];
+
+        async function run() {
+            await init();
+            window.compress_image = compress_image;
+
+            // 获取元素
+            const dropArea = document.getElementById('dropArea');
+            const imageInput = document.getElementById('imageInput');
+            const fileInfo = document.getElementById('fileInfo');
+            const qualitySlider = document.getElementById('quality');
+            const qualityValue = document.getElementById('qualityValue');
+            const helpDesc = document.getElementById('helpDesc');
+            const clearState = document.getElementById('clearState');
+
+            // 滑块值变化时更新显示
+            qualitySlider.addEventListener('input', function () {
+                qualityValue.textContent = this.value;
+            });
+
+            // 点击拖拽区域时触发文件选择
+            dropArea.addEventListener('click', () => {
+                imageInput.click();
+            });
+
+            // 文件选择事件
+            imageInput.addEventListener('change', (event) => {
+                if (event.target.files.length) {
+                    selectedFile = event.target.files[0];
+                    fileInfo.textContent = `(${(selectedFile.size / 1024).toFixed(2)} KB)`;
+
+                    // 自动切换输出格式为与上传文件相同的格式
+                    autoSwitchOutputFormat(selectedFile);
+
+                    // 显示原图
+                    const originalImageInfo = document.getElementById('originalImageInfo');
+                    const originalImage = document.getElementById('originalImage');
+                    const reader = new FileReader();
+                    dropArea.style.display = 'none';
+                    helpDesc.style.display = 'block';
+                    reader.onload = function (e) {
+                        originalImage.src = e.target.result;
+                        originalImageInfo.style.display = 'block';
+                    };
+                    reader.readAsDataURL(selectedFile);
+                }
+            });
+
+            clearState.addEventListener('click', () => {
+                selectedFile = null;
+                fileInfo.textContent = '';
+                originalImageInfo.style.display = 'none';
+                dropArea.style.display = 'block';
+                helpDesc.style.display = 'none';
+                compressedImages = [];
+                output.innerHTML = '';
+            });
+
+            // 拖拽事件处理
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropArea.addEventListener(eventName, highlight, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, unhighlight, false);
+            });
+
+            function highlight() {
+                dropArea.classList.add('dragover');
+            }
+
+            function unhighlight() {
+                dropArea.classList.remove('dragover');
+            }
+
+            // 处理拖拽放置事件
+            dropArea.addEventListener('drop', handleDrop, false);
+
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+
+                if (files.length) {
+                    handleFiles(files);
+                }
+            }
+
+            function handleFiles(files) {
+                const file = files[0];
+                // 检查是否为图片文件
+                if (!file.type.match('image.*')) {
+                    alert('Please select an image file.');
+                    return;
+                }
+
+                selectedFile = file;
+                fileInfo.textContent = `Selected: ${file.name} (${(file.size / 1024).toFixed(2)} KB)`;
+
+                // 自动切换输出格式为与上传文件相同的格式
+                autoSwitchOutputFormat(file);
+
+                // 显示原图
+                const originalImageInfo = document.getElementById('originalImageInfo');
+                const originalImage = document.getElementById('originalImage');
+                const reader = new FileReader();
+                dropArea.style.display = 'none';
+                helpDesc.style.display = 'block';
+                reader.onload = function (e) {
+                    originalImage.src = e.target.result;
+                    originalImageInfo.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+
+                // 同步到隐藏的input元素
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                imageInput.files = dataTransfer.files;
+            }
+
+            // 自动切换输出格式函数
+            function autoSwitchOutputFormat(file) {
+                const formatSelect = document.getElementById('format');
+                const fileType = file.type.split('/')[1].toLowerCase();
+                
+                // 检查是否有匹配的格式选项
+                let optionFound = false;
+                for (let i = 0; i < formatSelect.options.length; i++) {
+                    if (formatSelect.options[i].value === fileType) {
+                        formatSelect.selectedIndex = i;
+                        optionFound = true;
+                        break;
+                    }
+                }
+                
+                // 如果没有找到匹配的格式，切换到jpeg
+                if (!optionFound) {
+                    for (let i = 0; i < formatSelect.options.length; i++) {
+                        if (formatSelect.options[i].value === 'jpeg') {
+                            formatSelect.selectedIndex = i;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            document.getElementById('compressButton').addEventListener('click', async () => {
+                const quality = parseInt(document.getElementById('quality').value);
+                const format = document.getElementById('format').value;
+                const output = document.getElementById('output');
+                const info = document.getElementById('info');
+
+                if (!selectedFile) {
+                    alert('Please select an image file.');
+                    return;
+                }
+
+                const file = selectedFile;
+                const originalSizeInKB = (file.size / 1024).toFixed(2);
+                const arrayBuffer = await file.arrayBuffer();
+                const uint8Array = new Uint8Array(arrayBuffer);
+
+                try {
+                    const compressedImageData = window.compress_image(uint8Array, quality, format);
+
+                    // 检查压缩是否成功
+                    if (compressedImageData.length === 0) {
+                        info.innerHTML = '<div class="error">Error compressing image. Please try a different image or settings.</div>';
+                        // 不清空output，保留之前的结果
+                        return;
+                    }
+
+                    const mimeType = format === 'jpeg' ? 'image/jpeg' : 'image/png';
+                    compressedBlob = new Blob([compressedImageData], { type: mimeType });
+                    const url = URL.createObjectURL(compressedBlob);
+
+                    // 创建临时图像以获取尺寸
+                    const img = new Image();
+                    img.onload = function () {
+                        const compressedSizeInKB = (compressedBlob.size / 1024).toFixed(2);
+                        const compressionRatio = (1 - (compressedBlob.size / file.size)) * 100;
+
+                        // 为每个压缩图片生成唯一ID
+                        const imageId = Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+
+                        // 将图片数据存储到数组中
+                        compressedImages.push({
+                            id: imageId,
+                            blob: compressedBlob,
+                            format: format,
+                            quality: quality
+                        });
+
+                        // 创建新的结果容器
+                        const resultContainer = document.createElement('div');
+                        resultContainer.className = 'result-container';
+                        resultContainer.dataset.imageId = imageId; // 将ID存储在data属性中
+
+                        // 为每个结果创建独立的下载按钮
+                        const downloadBtn = document.createElement('button');
+                        downloadBtn.textContent = 'Download';
+                        downloadBtn.className = 'download-btn';
+                        downloadBtn.onclick = function () {
+                            // 根据ID找到对应的图片数据
+                            const imageData = compressedImages.find(img => img.id === imageId);
+                            if (imageData) {
+                                const extension = imageData.format === 'jpeg' ? 'jpg' : 'png';
+                                const url = URL.createObjectURL(imageData.blob);
+                                const a = document.createElement('a');
+                                a.href = url;
+                                a.download = `compressed-image-${imageData.quality}-${imageId}.${extension}`;
+                                document.body.appendChild(a);
+                                a.click();
+                                document.body.removeChild(a);
+                                URL.revokeObjectURL(url);
+                            }
+                        };
+
+                        const stats = document.createElement('div');
+                        stats.className = 'stats';
+                        stats.innerHTML = `
+                            <div><div>Quality:</div><div class="value">${quality}</div></div>
+                            <div><div>Image Size:</div><div class="value">${img.width} x ${img.height}</div></div>
+                            <div><div>File Size:</div><div class="value">${compressedSizeInKB} KB</div></div>
+                            <div><div>Ratio:</div><div class="value">${compressionRatio.toFixed(2)}%</div></div>
+                        `;
+                        resultContainer.appendChild(stats);
+                        stats.appendChild(downloadBtn);
+                        // 添加图片和下载按钮
+                        const imgElement = document.createElement('img');
+                        imgElement.src = url;
+                        imgElement.alt = 'Compressed Image';
+
+                        resultContainer.appendChild(imgElement);
+
+                        // 将新结果插入到output的顶部
+                        output.insertBefore(resultContainer, output.firstChild);
+                        URL.revokeObjectURL(url);
+                        helpDesc.style.display = 'none';
+                    };
+                    img.src = url;
+
+                } catch (error) {
+                    console.error('Error compressing image:', error);
+                    info.innerHTML = '<div class="error">Error compressing image. Please try a different image or settings.</div>';
+                    // 不清空output，保留之前的结果
+                }
+            });
+        }
+        run();
+    </script>
+</body>
+
+</html>

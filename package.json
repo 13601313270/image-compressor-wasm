@@ -10,6 +10,7 @@
   "type": "module",
   "main": "image_compressor.js",
   "module": "image_compressor.js",
+  "types": "image_compressor.d.ts",
   "exports": {
     ".": "./image_compressor.js",
     "./image_compressor.js": "./image_compressor.js",
@@ -18,7 +19,8 @@
   },
   "files": [
     "image_compressor.js",
-    "image_compressor_bg.wasm"
+    "image_compressor_bg.wasm",
+    "image_compressor.d.ts"
   ],
   "keywords": [
     "wasm",
